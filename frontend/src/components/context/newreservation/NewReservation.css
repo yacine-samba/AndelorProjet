@@ -1,0 +1,34 @@
+.ticket{
+    background-color: var(--transparent-alice);
+    margin: 32px;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    font-weight: bold;
+}
+  .ticketnew{
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+  }
+
+  .buttonTicket{
+    padding: 20px;
+  }
+
+  .AddInfo{
+    font-size: 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-dark);
+    width: 200px;
+    padding:0.5rem;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: -125%;
+    left: 50%;
+    transform: translateX(-50%);
+  }

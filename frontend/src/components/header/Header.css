@@ -1,0 +1,60 @@
+/* Sidenav menu */
+.sidenav {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 2;
+    top: -200%;
+    padding-top: 125px;
+    background-color: var(--main-color);
+    transition: top 500ms ease-in-out;
+  }
+
+
+  /* Sidenav menu links */
+  .sidenav a {
+    text-decoration: none;
+    font-size: 2.5rem;
+    font-weight: bold; 
+    line-height: 2.5;
+    text-transform: uppercase;
+    color: var(--text-color);
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .sidenav a:hover {
+    color: var(--color-primary);
+  }
+  
+  .sidenav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Active class */
+  .sidenav.active {
+    top: 0;
+  }
+  
+  /* Close btn */
+  .sidenav .close {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+  }
+  
+  /* Icône burger */
+  .burger-icon span {
+    display: block;
+    width: 35px;
+    height: 5px;
+    background-color: black;
+    margin: 6px 0;
+  }
+
+  FontAwesomeIcon{
+    font-size: 5rem;
+  }

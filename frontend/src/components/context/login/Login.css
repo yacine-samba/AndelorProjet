@@ -1,0 +1,38 @@
+  .form {
+    padding: 2rem 0;
+  }
+  
+  .input {
+    display: flex;
+    flex-direction: column-reverse;
+    position: relative;
+    padding-top: 1.5rem;
+  }
+  .input + .input {
+    margin-top: 1.5rem;
+  }
+  
+  .input-label {
+    color: #8597a3;
+    position: absolute;
+    top: 1.5rem;
+    transition: 0.25s ease;
+  }
+  
+  .input-field {
+    border: 0;
+    z-index: 1;
+    background-color: transparent;
+    border-bottom: 2px solid var(--text-color-grey);
+    font: inherit;
+    font-size: 1.125rem;
+    padding: 0.25rem 0;
+  }
+  .input-field:focus, .input-field:valid {
+    outline: 0;
+    border-bottom-color: var(--color-primary);
+  }
+  .input-field:focus + .input-label, .input-field:valid + .input-label {
+    color: var(--color-primary);
+    transform: translateY(-1.5rem);
+  }

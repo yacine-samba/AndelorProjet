@@ -1,0 +1,89 @@
+/* tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* variables */
+:root {
+  --main-color: #03091a;
+  --color-primary: #ebbe4d;
+  --color-primary-hover: #FFCF55;
+  --text-color: #f0f8ff;
+  --text-color-grey: #d8d8d8;
+  --color-grey: #8a8a8a;
+  --color-dark: #111;
+  --transparent-alice: #f0f8ff20;
+}
+
+/* fonts */
+
+/* Sk-Modernist, serif */
+@font-face {
+  font-family: Modern;
+  src: url(./assets/fonts/Modernist/Sk-Modernist-Regular.otf);
+}
+
+/* Ade, sans-serif */
+@font-face {
+  font-family: Ade;
+  src: url(./assets/fonts/Ade/Ade-Display.otf);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body{
+  font-family: 'Modern', sans-serif;
+  color: var(--text-color);
+  background-color: var(--main-color);
+  font-size: 1rem;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+h1{
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+h2{
+font-size: 2rem;
+}
+
+h3{
+font-size: 1.45rem;
+}
+h4{
+  font-size: 1.25rem;
+}
+
+p{
+  font-weight: normal;
+  line-height: 1.5;
+}
+/* Icons */
+.iconHeader{
+  font-size: 2rem;
+  margin: 24px 0;
+}
+/* Page d'accueil */
+
+.AndelorTitle{
+  font-family: 'Ade', serif;
+  text-transform: uppercase;
+  font-size: 3rem;
+  font-weight: normal;
+}

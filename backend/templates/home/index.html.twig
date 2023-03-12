@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+
+<div>
+<h1> Bienvenue sur le projet Andelor !</h1>
+{% if app.user %}
+        <div>
+            Bonjour {{ app.user.prenom }} !<br>
+            Accéder à <a href="#">Mon compte</a><br>
+            <a href="{{ path('app_logout') }}">Déconnexion</a>
+        </div>
+        {% else %}
+        <a href="{{ path('app_login') }}">Se connecter</a>
+        <a href="{{ path('app_register') }}">Créer un compte</a>
+    {% endif %}
+
+    
+</div>
+
+{% endblock %}

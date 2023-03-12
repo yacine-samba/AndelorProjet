@@ -1,0 +1,19 @@
+
+
+.description{
+    display: none;
+}
+
+.description.active {
+    display: block;
+  }
+
+#open.close{
+    display: none;
+  }
+
+#open .more{
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(#03091a00, var(--main-color));
+}
