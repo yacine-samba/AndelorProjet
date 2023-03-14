@@ -50,7 +50,7 @@ export const Andelorapi = () => {
       <Popup textPopup={"Information sur l'éxposition"} text={"Besoin d'aide"} icon={faCircleInfo}/>
       <Separator />
       <p>Visite gratuite</p>
-      <Button path="/tickets">
+      <Button path="/authentification">
         Réserver
       </Button>
     </div>

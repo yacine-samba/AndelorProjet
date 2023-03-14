@@ -1,0 +1,21 @@
+.guest{
+    width: 100%;
+}
+
+.guest div{
+    width: 100%;
+}
+
+
+.line{
+    height: 2px;
+    width: 100%;
+}
+
+.line1{
+    background: linear-gradient(-45deg, var(--gradient-color));
+}
+
+.line2{
+    background: linear-gradient(45deg, var(--gradient-color));
+}

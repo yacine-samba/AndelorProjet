@@ -112,8 +112,6 @@ export const NewReservation = ({ path }) => {
         <div>
             <form className="form flex flex-col items-center w-full" onSubmit={handleSubmit}>
 
-
-
                 <div className="input w-full">
                     <input
                         type="text"

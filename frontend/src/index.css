@@ -7,6 +7,8 @@
 :root {
   --main-color: #03091a;
   --color-primary: #ebbe4d;
+  --color-primary-transparent: #ebbe4d00;
+  --gradient-color: #ebbe4d, #ebbe4d00;
   --color-primary-hover: #FFCF55;
   --text-color: #f0f8ff;
   --text-color-grey: #d8d8d8;
@@ -73,6 +75,11 @@ h4{
 p{
   font-weight: normal;
   line-height: 1.5;
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
 /* Icons */
 .iconHeader{

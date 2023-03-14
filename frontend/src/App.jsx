@@ -6,11 +6,11 @@ import { Home } from './home/Home';
 import { Andelorapi } from './exposition/Andelorapi';
 import { Reservation } from './reservation/Reservation';
 import { Tickets } from './reservation/Tickets';
-import { Connexion } from './connexion/Connexion';
-import { Profil } from './profil/Profil';
+// import { Profil } from './profil/Profil';
 import { Error } from './utils/Error';
-import { AuthGuard } from './services/AuthGuard';
+// import { AuthGuard } from './services/AuthGuard';
 import ConfirmationRes from './Confirmation/ConfirmationRes';
+import Auth from './auth/Auth';
 
 
 
@@ -23,13 +23,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/exposition/1" element={<Andelorapi />} />
-          <Route path="/connexion" element={<Connexion />} />
           {/* <Route path="/profil" element={
             <AuthGuard path="/connexion">
               <Profil />
             </AuthGuard>
           } /> */}
           <Route path="/reservation" element={<Reservation />} />
+          <Route path="/authentification" element={<Auth />} />
           <Route path="/tickets" element={ <Tickets />} />          
           <Route path="/confirmation-reservation" element={ <ConfirmationRes />} />          
           <Route path="/*" element={<Error />} />
