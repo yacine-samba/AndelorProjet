@@ -9,7 +9,7 @@ export const Guest = () => {
             <h4 className="mx-4">OU</h4>
             <span className="line line2"></span>
         </div>
-        <a href="/" className=' my-4'>
+        <a href="/tickets" className=' my-4'>
         Continuer en tant qu’invité
         </a>
     </div>
