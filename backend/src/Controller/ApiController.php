@@ -2,16 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Users;
-use App\Repository\UsersRepository;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Entity\Exposition;
 use App\Entity\Reservation;
 use App\Repository\ExpositionRepository;
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Namshi\JOSE\JWT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUsers;
 
@@ -27,15 +31,17 @@ class ApiController extends AbstractController
     private $manager;
     private $res;
     private $expo;
-    // private $jwtEncoder;
-    // private $email;
-    // private $user;
+    private $jwtEncoder;
+    private $email;
+    private $user;
 
-    public function __construct(EntityManagerInterface $manager, ReservationRepository $res, ExpositionRepository $expo)
+    public function __construct(EntityManagerInterface $manager, ReservationRepository $res, ExpositionRepository $expo, JWTEncoderInterface  $jwtEncoder, UserRepository $email)
     {
         $this->manager = $manager;
         $this->res = $res;
         $this->expo = $expo;
+        $this->jwtEncoder = $jwtEncoder;
+        $this->email = $email;
     }
 
 
@@ -88,109 +94,135 @@ class ApiController extends AbstractController
     }
 
 
-    // public function __construct(EntityManagerInterface $manager, UsersRepository $email, JWTEncoderInterface  $jwtEncoder)
-    // {
-    //     $this->manager = $manager;
-    //     $this->jwtEncoder = $jwtEncoder;
-    //     $this->email = $email;
-    // }
 
-    // /**
-    //  * @Route("/api/login", name="api_login", methods={"POST"})
-    //  */
-    // public function login(Request $request): Response
-    // {
-    //     $data = json_decode($request->getContent(), true);
+    /**
+     * @Route("/api/login", name="api_login", methods={"POST"})
+     */
+    public function login(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
 
-    //     $email = $data['email'] ?? null;
-    //     $password = $data['password'] ?? null;
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
 
-    //     if (!$email || !$password) {
-    //         return new Response('Email and password are required', Response::HTTP_BAD_REQUEST);
-    //     }
+        if (!$email || !$password) {
+            return new Response('Email and password are required', Response::HTTP_BAD_REQUEST);
+        }
 
-    //     // Chargement de l'utilisateur avec son email depuis la base de donnée
-    //     $email = $this->email->findOneBy(['email' => $email]);
+        // Chargement de l'utilisateur avec son email depuis la base de donnée
+        $email = $this->email->findOneBy(['email' => $email]);
 
-    //     if (!$email || !password_verify($data['password'], $email->getPassword())) {
-    //         return new JsonResponse(['message' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
-    //     }
+        if (!$email || !password_verify($data['password'], $email->getPassword())) {
+            return new JsonResponse(['message' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+        }
 
-    //     // Génerer un JWT token
-    //     $token = $this->jwtEncoder->encode([
-    //         'email' => $email->getEmail(),
-    //         'prenom' => $email->getPrenom(),
-    //         'nom' => $email->getNom(),
-    //         'roles' => $email->getRoles(),
-    //         'exp' => time() + 3600 // Expires in 1 hour.
-    //     ]);
+        // Génerer un JWT token
+        $token = $this->jwtEncoder->encode([
+            'email' => $email->getEmail(),
+            'prenom' => $email->getPrenom(),
+            'nom' => $email->getNom(),
+            'telephone' => $email->getTelephone(),
+            'roles' => $email->getRoles(),
+            'exp' => time() + 3600 // Expires in 1 hour.
+        ]);
 
-    //     // Return the JWT token.
-    //     return new JsonResponse(['token' => $token]);
-    // }
+        // Return the JWT token.
+        return new JsonResponse(['token' => $token]);
+    }
 
-    // /**
-    //  * @Route("/api/register", name="api_register", methods={"POST"})
-    //  */
-    // public function register(Request $request): Response
-    // {
-    //     $data = json_decode($request->getContent(), true);
+    /**
+     * @Route("/api/register", name="api_register", methods={"POST"})
+     */
+    public function register(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
 
-    //     $email = $data['email'] ?? null;
-    //     $password = $data['password'] ?? null;
-    //     $nom = $data['nom'] ?? null;
-    //     $prenom = $data['prenom'] ?? null;
-    //     $telephone = $data['telephone'] ?? null;
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+        $nom = $data['nom'] ?? null;
+        $prenom = $data['prenom'] ?? null;
+        $telephone = $data['telephone'] ?? null;
 
 
-    //     if (!$email || !$password) {
-    //         return new Response('Email and password are required', Response::HTTP_BAD_REQUEST);
-    //     }
+        if (!$email || !$password) {
+            return new Response('Email and password are required', Response::HTTP_BAD_REQUEST);
+        }
 
-    //     // Check if the email is already registered
-    //     $existingUser = $this->email->findOneBy(['email' => $email]);
-    //     if ($existingUser) {
-    //         return new JsonResponse(['message' => 'Email already registered'], Response::HTTP_CONFLICT);
-    //     }
+        // Check if the email is already registered
+        $existingUser = $this->email->findOneBy(['email' => $email]);
+        if ($existingUser) {
+            return new JsonResponse(['message' => 'Email already registered'], Response::HTTP_CONFLICT);
+        }
 
-    //     // Hash the password
-    //     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        // Hash the password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    //     // Create a new user object and set its properties
-    //     $user = new Users();
-    //     $user->setEmail($email);
-    //     $user->setPassword($hashedPassword);
-    //     $user->setPrenom($prenom);
-    //     $user->setNom($nom);
-    //     $user->setTelephone($telephone);
-    //     $user->setCreatedAt(new \DateTimeImmutable());
-    //     $user->setRoles(["ROLE_USER"]);
+        // Create a new user object and set its properties
+        $user = new User();
+        $user->setEmail($email);
+        $user->setPassword($hashedPassword);
+        $user->setPrenom($prenom);
+        $user->setNom($nom);
+        $user->setTelephone($telephone);
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setRoles(["ROLE_USER"]);
 
-    //     // Persist the user object to the database
-    //     $this->manager->persist($user);
-    //     $this->manager->flush();
+        // Persist the user object to the database
+        $this->manager->persist($user);
+        $this->manager->flush();
 
-    //     // Generate JWT token
-    //     $token = $this->jwtEncoder->encode([
-    //         'email' => $user->getEmail(),
-    //         'prenom' => $user->getPrenom(),
-    //         'nom' => $user->getNom(),
-    //         'roles' => $user->getRoles(),
-    //         'exp' => time() + 3600 // Expires in 1 hour.
-    //     ]);
+        // Generate JWT token
+        $token = $this->jwtEncoder->encode([
+            'email' => $user->getEmail(),
+            'prenom' => $user->getPrenom(),
+            'nom' => $user->getNom(),
+            'roles' => $user->getRoles(),
+            'exp' => time() + 3600 // Expires in 1 hour.
+        ]);
 
-    //     // Return the JWT token
-    //     return new JsonResponse(['token' => $token]);
-    // }
+        // Return the JWT token
+        return new JsonResponse(['token' => $token]);
+    }
 
 
-    // #[Route('/api/getAllUsers', name: 'get_allusers', methods: 'GET')]
-    // public function getAllUsers(): Response
-    // {
-    //     $email = $this->email->findAll();
+    /**
+     * @Route("/api/login_check", name="api_login_check", methods={"GET"})
+     */
+    public function loginCheck(Request $request)
+    {
+        // Récupérer le token JWT depuis l'en-tête Authorization
+        $authorizationHeader = $request->headers->get('Authorization');
+        if (!$authorizationHeader) {
+            throw new UnauthorizedHttpException('Bearer');
+        }
+    
+        // Extraire le token de l'en-tête Authorization
+        $token = str_replace('Bearer ', '', $authorizationHeader);
+    
+        try {
+            // Décoder le token JWT pour obtenir les informations de l'utilisateur
+            $data = $this->jwtEncoder->decode($token);
+        } catch (JWTDecodeFailureException $e) {
+            throw new UnauthorizedHttpException('Bearer', 'Invalid token', $e);
+        }
+    
+        // Vérifier si l'utilisateur existe en base de données
+        $user = $this->email->findOneBy(['email' => $data['email']]);
+        if (!$user) {
+            throw new UnauthorizedHttpException('Bearer', 'Unknown user');
+        }
+    
+        // Tout est OK, l'utilisateur est connecté
+        return new JsonResponse(['message' => 'utilisateur connecter']);
+    }
 
-    //     return $this->json($email, 200);
-    // }
+    #[Route('/api/getAllUsers', name: 'get_allusers', methods: 'GET')]
+    public function getAllUsers(): Response
+    {
+        $email = $this->email->findAll();
+
+        return $this->json($email, 200);
+    }
 
     // #[Route('/api/getprenom', name: 'get_prenom', methods: 'GET')]
     // public function getPrenom(): Response

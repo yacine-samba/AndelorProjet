@@ -29,7 +29,7 @@ Axios.interceptors.response.use(response => {
 }, error => {
     if(error.response.status === 401){
         profilservices.logout()
-        window.location = '/reservation'
+        // window.location = '/reservation'
     }else{
         return Promise.reject(error)
     }

@@ -28,9 +28,9 @@ function App() {
               <Profil />
             </AuthGuard>
           } /> */}
-          <Route path="/reservation" element={<Reservation />} />
+          {/* <Route path="/reservation" element={<Reservation />} /> */}
           <Route path="/authentification" element={<Auth />} />
-          <Route path="/tickets" element={ <Tickets />} />          
+          <Route path="/tickets" element={ <Tickets />} />
           <Route path="/confirmation-reservation" element={ <ConfirmationRes />} />          
           <Route path="/*" element={<Error />} />
         </Routes>
